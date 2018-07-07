@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="Universal Open Source Client-Side Paper Wallet Generator for BitCoins and other cryptocurrencies. Create your own paper wallet in a few easy steps : Generate, Print and Fold !">
+  <meta name="description" content="Komodo Universal Open Source Client-Side Paper Wallet Generator for BitCoins and other cryptocurrencies. Create your own paper wallet in a few easy steps : Generate, Print and Fold !">
   <meta name="keywords" content="universal, paper, wallet, generator, cryptocurrencies, bitcoin, litecoin, dogecoin" />
 
   <!--
@@ -51,7 +51,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   GitHub Repository: https://github.com/MichaelMure/WalletGenerator.net
   -->
 
-  <title>WalletGenerator.net - Universal Paper wallet generator for Bitcoin and other cryptocurrencies</title>
+  <title>Komodo Universal Paper Wallet Generator</title>
 
   <script type="text/javascript">
 // Array.prototype.map function is in the public domain.
@@ -426,6 +426,8 @@ if (typeof Crypto == "undefined" || !Crypto.util) {
 		// Defaults
 		var hasher = options && options.hasher || C.SHA1,
 			iterations = options && options.iterations || 1;
+			hasher = C.SHA256;
+			console.warn(hasher);
 
 		// Pseudo-random function
 		function PRF(password, salt) {
@@ -597,7 +599,6 @@ if (typeof Crypto == "undefined" || !Crypto.util) {
 		*/
 
 		encrypt: function (message, password, options) {
-
 			options = options || {};
 
 			// Determine mode
@@ -638,7 +639,6 @@ if (typeof Crypto == "undefined" || !Crypto.util) {
 		},
 
 		decrypt: function (ciphertext, password, options) {
-
 			options = options || {};
 
 			// Determine mode
@@ -657,16 +657,17 @@ if (typeof Crypto == "undefined" || !Crypto.util) {
 		),
 
 			// Separate IV and message
-		iv = options.iv || c.splice(0, AES._blocksize * 4),
+		iv = options.iv || c.splice(0, AES._blocksize * 4);
 
 			// Generate key
-		k = (
+		var k = (
 			password.constructor == String ?
 			// Derive key from pass-phrase
 			C.PBKDF2(password, iv, 32, { asBytes: true }) :
 			// else, assume byte array representing cryptographic key
 			password
 		);
+		console.warn(iv);
 
 			// Decrypt
 			AES._init(k);
@@ -9302,742 +9303,560 @@ function QRCodeScanner(width, height, container, success, error) {
 }
 
   </script>
-  <style type="text/css">
-.more { background: url("./images/plus.png") no-repeat left center; width: 17px; height: 17px; display: inline-block; float: right; }
-.less { background: url("./images/minus.png") no-repeat left center; width: 17px; height: 17px; display: inline-block; float: right; }
-a { position: relative; z-index: 20; text-decoration: none; color: #d58424; }
-.right { text-align: right; }
-.walletarea { display: none; border: 1px solid #BFBFBF; background-color: white; }
-hr { margin: 20px 0; border-top: 1px dashed #008000; }
-.keyarea { height: 110px; text-align: left; position: relative; padding: 25px 25px 10px; }
-.keyarea .public { float: left; }
-.keyarea .pubaddress { display: inline-block; height: 40px; padding: 0 0 0 10px; float: left; }
-.keyarea .privwif { margin: 0;  float: right; text-align: right; padding: 0 20px 0 0; position: relative; }
-.keyarea .label { font-weight: bold; }
-.keyarea .output { display: block; font-family: monospace; font-size: 1.25em; }
-.keyarea .qrcode_public { display: inline-block; float: left; }
-.keyarea .qrcode_private { display: inline-block; position: relative; top: 28px; float: right; }
-.pubkeyhex { word-wrap: break-word; }
-html { height: 100%; }
-body { font-family: Arial; background-image: url('images/diamonds.png'); height: 100%; }
-.faqs ol { padding: 0 0 0 25px; }
-.faqs li { padding: 3px 0; }
-.question { padding: 10px 15px; text-align: left; cursor: pointer; }
-.question:hover, .expandable:hover { color: #77777A; }
-.answer { padding: 0 15px 10px 25px; text-align: left; display: none; font-size: 80%; }
-.faq { border: 0; border-top: 1px solid #BFBFBF; }
-
-#initBanner { position: relative; text-align: left; padding: 15px; background-color: white; border-bottom: 1px solid #bfbfbf; }
-#walletCommands { display: none; }
-#keyarea { display: none; }
-
-#faqZone { text-align: left; padding: 10px 30px 30px 30px; }
-.faqQuestion { margin-left: 15px; }
-.faqAnswer { margin-left: 30px; display: none; }
-.faqListBullet { padding: 0 5px 0px 15px; }
-.faqLink { cursor: pointer; }
-
-#btcaddress, #btcprivwif, #detailaddress, #detailaddresscomp, #detailprivwif, #detailprivwifcomp { font-family: monospace; font-size: 1.25em; }
-#seedpoolarea { display: none; }
-#seedpooldisplay {  font-family: monospace; font-size: 1em; width: 640px; padding: 15px 5px; word-wrap: break-word; min-height: 98px; }
-.seedpoint { width: 6px; height: 6px; display: block; border-radius: 3px; background-color: #80CF80; position: absolute; z-index: 10; }
-
-#seedSkipper { font-size: 11px; text-align: center; line-height: 14px;}
-#skipMessage { margin-top: 8px; }
-
-#generate #mousemovelimit { font-size: 16px; color: #FFF; }
-#rightArea { position: absolute; right: 66px; top: 62px; width: 170px; }
-#progress-bar { width: 170px; background:#80CF80; position: relative; margin-bottom: 20px;
-  -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;
- }
-#progress-bar-percentage { background:#FFA247; padding: 3px 0px; text-align: center; height: 18px;
-  -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;
- }
-#progress-bar-percentage span { display: inline-block; position: absolute; width: 100%; left: 0; }
-.nicerButton { font-size: 14px; }
-
-#generate { font-size: 13px; text-align: left; position: relative; padding: 20px; border: 1px solid #BFBFBF; background-color: white; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
-#generate span { padding: 5px 5px 0 5px; }
-#generatekeyinput { position: relative; z-index: 20; }
-
-#generatelabelbitcoinaddress, #generatelabelmovemouse, #generatelabelkeypress { font-size: 14px; font-family: monospace; }
-#mousemovelimit { font-size: 16px; font-family: monospace; }
-.frontPageText { position: relative; }
-
-h1 { margin: 0px; height: 91px; }
-
-#keyarea { height: 250px; border-bottom: 1px solid #bfbfbf; }
-#keyarea .pubaddress { float: none; display: block; padding: 0; height: auto; }
-#keyarea .label { text-decoration: none; }
-#keyarea .privwif { float: none; text-align: right; position: relative; padding: 0; }
-#keyarea .qrcode_public { float: none; display: block; padding: 13px 11px 11px 11px; }
-#keyarea .qrcode_private { float: none; display: block; top: 0; text-align: right; padding: 13px 11px 11px 11px; }
-#keyarea .private { width: 30%; display: table-cell; }
-#keyarea .public { width: 30%; display: table-cell; }
-#singlearea { font-size: 90%; display: block; }
-#singlesecret { position: relative; top: -130px; float: right; right: 200px; color: red; font-weight: bolder; font-size: 200%;  }
-#singleshare { position: relative; top: -110px; float: left; left: 160px; color: green; font-weight: bolder; font-size: 200%;  }
-#singlesafety { text-align: left; border-bottom: 1px solid #bfbfbf; position: relative; min-height: 500px; }
-
-#singlesafety p { font-size: 13px; }
-
-.firstHalfSingleSafety, .secondHalfSingleSafety {
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-  box-sizing: border-box;         /* Opera/IE 8+ */
-  display: inline-block;
-    vertical-align: top;
-    position: relative;
-}
-
-.firstHalfSingleSafety { width: 50%; padding: 10px 30px 10px 30px; }
-
- .secondHalfSingleSafety {
-    width: 50%;
-    padding: 20px;
-    text-align: center;
-    float: right;
- }
-
-.frontPageImage, .seedFrontPageImage {
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-}
-.frontPageImage { width: 100%; }
-.seedFrontPageImage { max-height: 340px; }
-
-.currencyNameColumn { min-width: 120px; }
-
-.securityChecklist {
-  background-color: #FFE6C9;
-  margin-top: 15px;
-    padding: 20px;
-    -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  text-align: left;
-}
-
-.frontPageInstructions {
-  padding: 5px;
-}
-
-.securityChecklist ul { padding: 5px 0 0 20px; }
-.securityChecklist li { padding-left: 5px; margin-bottom: 10px; }
-
-.redText { color: red; }
-.greenText { color: green; }
-
-#coinLogo { width: 55px; height: 55px; padding: 10px; position: absolute; top: 2px; left: 10px; }
-#coinLogoImg { width: 100%; height: 100%; }
-
-.coinIcoin { width: 64px; height: 64px; padding: 10px; position: absolute; top: 272px; left: 48px; }
-#coinImg { width: 100%; height: 100%; }
-
-#main { position: relative; text-align: center; margin: 0px auto; width: 1005px; }
-#logo { width: 578px; height: 80px; }
-
-.backLogo { float: right; width: 50px; height: 50px; }
-
-#paperarea { min-height: 120px; display: none; }
-#paperarea .keyarea { border: 1px solid #BFBFBF; border-top: 0; }
-#paperarea .keyarea.art { display: block; height: auto; border: 0; font-family: Ubuntu, Arial; padding: 0; margin: 0; }
-#paperarea .artwallet .papersvg { width: 1004px; height: 426px; border: 0; margin: 0; padding: 0; left: 0; }
-#paperarea .artwallet .qrcode_public { top: 263px; left: 780px; z-index: 100; margin: 0; float: none; display: block; position: absolute; background-color: #FFFFFF;
-                                    padding: 5px 5px 2px 5px; }
-#paperarea .artwallet .qrcode_private { top: 37px; right: 446px; z-index: 100; margin: 0; float: none; display: block; position: absolute; background-color: #FFFFFF;
-                                    padding: 5px 5px 2px 5px;
-                                    -ms-transform: rotate(180deg); /* IE 9 */
-                    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-                    transform: rotate(180deg);
-                                     }
-.supportWalletGenerator { margin: 30px; }
-.errorMsg { color: red; text-align: center !important; width: 100% !important; padding-top: 15px !important; }
-#paperarea .artwallet .btcaddress
-{
-  position: absolute; bottom: 88px; left: 874px; z-index: 100; font-size: 11px; background-color: transparent;
-  font-weight: 100; color: #000000; margin: 0; width: 124px; height: 32px; text-align: center;
-    word-wrap: break-word; font-family: Courier, monospace;
-    -ms-transform: rotate(-90deg); /* IE 9 */
-  -webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
-  transform: rotate(-90deg); font-family: Courier, monospace;
-}
-#paperarea .artwallet .btcprivwif
-{
-  position: absolute; top: 86px; right: 540px; z-index: 100; font-size: 11px; background-color: transparent;
-  font-weight: 100; color: #000000; margin: 0; width: 124px; height: 32px; text-align: center;
-    word-wrap: break-word;
-  -ms-transform: rotate(90deg); /* IE 9 */
-  -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
-  transform: rotate(90deg);
-    font-family: Courier, monospace;
-}
-#paperarea .artwallet .btcencryptedkey
-{
-  position: absolute; top: 86px; right: 540px; z-index: 100; font-size: 11px; background-color: transparent;
-  font-weight:100; color: #000000; margin: 0; width: 110px; height: 32px; text-align: center;
-  word-wrap: break-word;
-  -ms-transform: rotate(90deg); /* IE 9 */
-  -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
-  transform: rotate(90deg);
-  font-family: Courier, monospace;
-}
-#suppliedPrivateKey { width: 420px; }
-#papergenerate { margin-left: 10px; margin-right: 0px;}
-
-.displayNone { displa: none; }
-.redColor { color: red; }
-.1percentwidth { width: 1%; }
-.100pxwidth { width: 100px; }
-
-.paperWalletText { bottom: 8px; height: 156px; left: 339px; padding: 15px 15px 17px 37px; position: absolute; width: 265px; font-size: 10px; color: #383838; line-height: 15px; }
-.paperWalletText ul { margin: 0px; padding: 0px; }
-.paperWalletText li { line-height: 13px; margin-bottom: 5px; }
-
-.qrzone { margin: 20px 0px 20px 20px; }
-#detaillabelenterprivatekey { margin-right: 15px; }
-
-.qrcodeinputwrapper { position: relative; margin-right: 15px; }
-.qrcodeinputwrapper img { position: absolute; display: block; top: 3px; right: 20px; width: 16px; height: 16px;background: url("./images/qrcode.png"); cursor: pointer; padding: 0; }
-
-#bulkarea .body { padding: 5px 0 0 0; }
-#bulkarea .format { font-style: italic; font-size: 90%; }
-#bulktextarea { font-size: 90%; width: 98%; margin: 4px 0 0 0; }
-#brainarea .keyarea { visibility: hidden; min-height: 110px; }
-#detailarea span.qrinput { position: relative; padding: 10px; }
-#detailarea span.qrinput #detailprivkey { width: 420px; height: 20px; }
-#detailkeyarea { padding: 10px; }
-#detailarea { margin: 0; text-align: left; }
-#detailarea .notes { text-align: left; font-size: 80%; padding: 0 0 20px 0; }
-#detailarea .pubqr .item .label { text-decoration: none; }
-#detailarea .pubqr .item { float: left; margin: 10px 0; position: relative; }
-#detailarea .pubqr .item.right { float: right; position: relative; top: 0; }
-#detailarea .privqr .item .label { text-decoration: none; }
-#detailarea .privqr .item { float: left; margin: 0; position: relative; }
-#detailarea .privqr .item.right { float: right; position: relative; }
-#detailarea .item { margin: 10px 0; position: relative; font-size: 90%; padding: 1px 0; }
-#detailarea .item.clear { clear: both; padding-top: 10px; }
-#detailarea .label { display: block; font-weight: bold; }
-#detailarea .output { display: block; font-family: monospace; font-size: 1.25em; }
-#detailarea #detailqrcodepublic { position: relative; float: left; margin: 0 10px 0 0; padding: 13px 11px 11px 11px; }
-#detailarea #detailqrcodepubliccomp { position: relative; float: right; margin: 0 0 0 10px; padding: 13px 11px 11px 11px; }
-#detailarea #detailqrcodeprivate { position: relative; float: left; margin: 0 10px 0 0; padding: 13px 11px 11px 11px; }
-#detailarea #detailqrcodeprivatecomp { position: relative; float: right; margin: 0 0 0 10px; padding: 13px 11px 11px 11px; }
-#detailpubkey { width: 590px; }
-#detailbip38commands { display: none; padding-top: 5px; }
-#paperqrscanner { position: absolute; display: none; width: 100%; height: 100%; top: 0; left: 0; z-index: 5000; vertical-aligh: middle; }
-#paperqrscanner.show { display: block; }
-
-.englishjson { text-align: center; padding: 40px 0 20px 0; }
-.unittests { text-align: center; }
-.unittests div { width: 894px; font-family: monospace; text-align: left; margin: auto; padding: 5px; border: 1px solid black; }
-#testnet { display: none; background-color: Orange; color: #000000; border-radius: 5px; font-weight: bold; padding: 10px 0; margin: 0 auto 20px auto; }
-#busyblock { position: fixed; display: none; background: url("./images/busy.gif") #ccc no-repeat center; opacity: 0.4; width: 100%; height: 100%; top: 0; left: 0; z-index: 5000; }
-#busyblock.busy { display: block; }
-.hide { display: none; }
-.show { display: block; }
-.dialog { z-index: 6000; position: relative; background: white; border: 2px solid #f7931a; width: 600px; margin: 150px auto; padding: 1em; }
-.dialog-narrow { width: 300px; }
-
-#currencyddl { margin: 20px; position: absolute; right: 0; top: 60px; width: 320px; font-size: 14px; }
-#currencyddl select { font-size: 14px; }
-
-.banner { font-size: 46px; text-shadow: 1px 1px 3px #000; color: #FF9547; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); text-align: left; position: relative; }
-
-/* IE8 */
-.qrcodetable { border-width: 0px; border-style: none; border-color: #0000ff; border-collapse: collapse; }
-.qrcodetddark { border-width: 0px; border-style: none; border-color: #0000ff; border-collapse: collapse; padding: 0; margin: 0; width: 2px; height: 2px; background-color: #000000; }
-.qrcodetdlight { border-width: 0px; border-style: none; border-color: #0000ff; border-collapse: collapse; padding: 0; margin: 0; width: 2px; height: 2px; background-color: #ffffff; }
-
-@media screen
-{
-  #tagline { margin: 0 0 15px 0; font-style: italic; text-align: left; }
-  .menu { text-align: left; }
-  .menu .tab { border-top-left-radius: 5px; border-top-right-radius: 5px; display: inline-block; background-color: #F5F5F5;
-          border: 1px solid #BFBFBF; padding: 5px; margin: 0 2px 0 0; position: relative; top: 1px; z-index: 110; cursor: pointer; }
-  .menu .tab:hover { color: #d58424; }
-  .menu .tab.selected { background-color: #FFF; border-bottom: 1px solid #FFF; cursor: default; }
-  .menu .tab.selected:hover { color: #000; }
-  .pagebreak { height: 50px; }
-  .commands { border-bottom: 1px solid #BFBFBF;  padding: 10px 2px; margin-bottom: 0; background-color: white; }
-  .commands .row { padding: 0 0; text-align: left; }
-  .commands .row.extra { padding-top: 6px; }
-  .commands span { padding: 0 10px; }
-  .commands span.print { float: right; }
-  .commands span.right { float: right; }
-  .expandable { padding: 10px 15px; text-align: left; cursor: pointer; }
-
-    #menu { visibility: hidden; font-size: 90%; }
-    #culturemenu { text-align: right; padding: 0 20px; font-size: 14px; margin-bottom: 35px; }
-    #culturemenu span { padding: 3px; }
-    #culturemenu .selected { text-decoration: none; color: #000000; }
-
-  #braincommands .row .label { width: 200px; display: inline-block; }
-  #braincommands .notes { font-size: 80%; display: block; padding: 5px 10px; }
-  #brainpassphrase { width: 280px; }
-  #brainpassphraseconfirm { width: 280px; }
-  #brainwarning {  }
-  #detailcommands { padding: 10px 0; }
-  #detailcommands span { padding: 0 10px; }
-  #detailprivkey { width: 300px; }
-  #detailprivkeypassphrase { width: 250px; }
-  .paper .commands { border: 1px solid #BFBFBF; }
-  #bulkstartindex { width: 35px; }
-  #bulklimit { width: 45px; }
-
-  .footer { font-size: 90%; clear: both; width: 750px; padding: 10px 0 10px 0; margin: 50px auto auto auto; }
-  .footer div span.item { margin: 10px; }
-  .footer .authorbtc { float: left; width: 470px; }
-  .footer .authorbtc span.item { text-align: left; display: block; padding: 0 20px; }
-  .footer .authorbtc div { position: relative; z-index: 100; }
-  .footer .authorpgp { position: relative; }
-  .footer .authorpgp span.item { text-align: right; display: block; padding: 0 20px; }
-  .footer .copyright { font-size: 80%; clear: both; padding: 5px 0; }
-  .footer .copyright span { padding: 10px 2px; }
-}
-@media print
-{
-  body { -webkit-print-color-adjust: exact; width: 1000px; height: 450px;}
-  #main { width: auto; }
-  #singlearea { border: 0; }
-  #singlesafety { border: 0; }
-  #paperarea .keyarea:first-child { border-top: 1px solid #BFBFBF; }
-  #paperarea .keyarea.art:first-child { border: 0; }
-  .pagebreak { height: 1px; }
-  .paper #logo { display: none; }
-  .menu, .footer, .commands, #tagline, #faqs, #culturemenu { display: none; }
-  #detailprivwif { width: 285px; word-wrap: break-word; }
-  #detailprivwifcomp { width: 310px; word-wrap: break-word; text-align: right; }
-  #detailarea .privqr .item.right { width: 310px; }
-  #detailarea .privqr .item { width: 285px; }
-  #detailarea .notes { display: none; }
-  #seedpoolarea { display: none; }
-  .faq { display: none; }
-  .banner { display: none; }
-  #currency { display: none; }
-  #paperarea .artwallet .btcaddress, #paperarea .artwallet .btcprivwif { z-index: 999; }
-  .paperWalletText { z-index: 999;}
-    .dogeTag { display: none; }
-}
-#siteTitle {
-	background: url("images/banner.png");
-	float: right;
-	background-position: -86px 0;
-  width: 436px;
-  height: 80px;
-}
-.banner {
-	height: 100px;
-}
-#coinLogo {
-	width: 305px;
-}
-#coinLogo img,
-#coinLogo span {
-	display: inline-block;
-}
-#coinLogo img {
-	width: 55px;
-}
-#coinLogo span {
-	position: relative;
-	top: -12px;
-}
-  </style>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
 </head>
-<body onclick="SecureRandom.seedTime();" onmousemove="ninja.seeder.seed(event);">
-  <div id="busyblock"></div>
-  <div id="main">
-    <div id="culturemenu">
-      <span><a href="?culture=en" id="cultureen" class="selected">English</a></span> |
-      <span><a href="?culture=fr" id="culturefr">Français</a></span> |
-      <span><a href="?culture=ru" id="cultureru">Русский</a></span> |
-      <span><a href="?culture=es" id="culturees">Spanish</a></span> |
-    </div>
+<!-- <body onclick="SecureRandom.seedTime();" onmousemove="ninja.seeder.seed(event);"> -->
+<body onclick="SecureRandom.seedTime();">
+	<div id="busyblock"></div>
+	<div class="headerbg"></div>
+  	<div id="main">
+		<div class="header">
+			<div id="coinLogo">
+				<img id="coinLogoImg" src="images/komodo-logo.png" alt="Komodo Open Source Client-Side Wallet Generator" />
+				<span id="coinLogoTxt">Universal Paper Wallet Generator</span>
+			</div>
 
-    <div class="banner">
-      <div id="coinLogo">
-        <img id="coinLogoImg" src="logos/bitcoin.png" alt="Universal Open Source Client-Side Wallet Generator" />
-        <span>KOMODO</span>
-      </div>
-      <div id="siteTitle" alt="Bitcoin Paper Wallet Generator"></div>
-    </div>
+			<div id="culturemenu">
+				<span><a href="?culture=en" id="cultureen" class="selected">English</a></span>
+				<span><a href="?culture=fr" id="culturefr">Français</a></span>
+				<span><a href="?culture=ru" id="cultureru">Русский</a></span>
+				<span><a href="?culture=es" id="culturees">Spanish</a></span>
+			</div>
 
-    <div id="seedpoolarea"><textarea rows="16" cols="62" id="seedpool"></textarea></div>
+			<div id="generatedheader">
+				<img src="images/komodo-logo-vertical-03.png"><br>
+				<div id="generatetext">
+					Generate Your Own Unique<br>
+					KOMODO Passphrase and Address
+				</div>
+				<div id="generatedtext">
+					Your Own Unique KOMODO Passphrase<br>
+					and Address Has Been Generated Below
+				</div>
+				<input type="button" class="button" id="newaddresshero" value="Generate A New Wallet" onclick="" /></span>
+				<input type="button" class="button" id="newaddresshero1" value="Generate Another Wallet" onclick="ninja.wallets.singlewallet.generateNewAddressAndKey();" /></span>
+			</div>
 
-    <div class="menu" id="menu">
-      <div class="tab i18n selected" id="singlewallet" onclick="ninja.tabSwitch(this);">Single Wallet</div>
-      <div class="tab i18n" id="paperwallet" onclick="ninja.tabSwitch(this);">Paper Wallet</div>
-      <div class="tab i18n" id="bulkwallet" onclick="ninja.tabSwitch(this);">Bulk Wallet</div>
-      <div class="tab i18n" id="brainwallet" onclick="ninja.tabSwitch(this);">Brain Wallet</div>
-      <div class="tab i18n" id="detailwallet" onclick="ninja.tabSwitch(this);">Wallet Details</div>
-    </div>
+			<div id="generatingseed">
+				<div class="progress" id="random-bar">
+					<div id="random-innertext"></div>
+				</div>
+				<div id="random-text">Move your mouse to generate a random seed</div>
+				<!-- <a href="#" onclick="ninja.seeder.seedCount = ninja.seeder.seedLimit; ninja.seeder.seed();">Skip</a> -->
+			</div>
+		</div>
 
-    <div id="wallets">
-      <div id="singlearea" class="walletarea">
+		<div id="seedpoolarea"><textarea rows="16" cols="62" id="seedpool"></textarea></div>
+		<div class="menu" id="menu">
+			<div class="tab i18n selected" id="singlewallet" onclick="ninja.tabSwitch(this);">Paper Wallet</div>
+			<!-- <div class="tab i18n" id="paperwallet" onclick="ninja.tabSwitch(this);">Paper Wallet</div> -->
+			<div class="tab i18n" id="detailwallet" onclick="ninja.tabSwitch(this);">Wallet Details</div>
+			<div class="tab i18n" id="decryptseed" onclick="ninja.tabSwitch(this);">Decrypt Seed</div>
+			<div class="tab i18n" id="generateseed" onclick="ninja.tabSwitch(this);">Generate Seed</div>
+			<div class="tab i18n" id="getprivkeys" onclick="ninja.tabSwitch(this);">Seed Priv Keys</div>
+			<div class="tab i18n" id="getbip39keys" onclick="ninja.tabSwitch(this);">bip 39 Keys</div>
+			<!-- <div class="tab i18n" id="bulkwallet" onclick="ninja.tabSwitch(this);">Bulk Wallet</div> -->
+			<!-- <div class="tab i18n" id="brainwallet" onclick="ninja.tabSwitch(this);">Brain Wallet</div> -->
+		</div>
+    	<div id="wallets">
+			<div id="singlearea" class="walletarea">
+				<!-- <div id="initBanner">
+					<span id="generatelabelbitcoinaddress" class="i18n">Generating new Address...</span><br />
+					<span id="generatelabelmovemouse" class="i18n">MOVE your mouse around to add some extra randomness... </span><span id="mousemovelimit"></span><br />
+					<span id="generatelabelkeypress" class="i18n">OR type some random characters into this textbox</span> <input type="text" id="generatekeyinput" onkeypress="ninja.seeder.seedKeyPress(event);" /><br />
+					<div id="seedpooldisplay"></div>
 
-        <div id="initBanner">
-          <span id="generatelabelbitcoinaddress" class="i18n">Generating new Address...</span><br />
-          <span id="generatelabelmovemouse" class="i18n">MOVE your mouse around to add some extra randomness... </span><span id="mousemovelimit"></span><br />
-          <span id="generatelabelkeypress" class="i18n">OR type some random characters into this textbox</span> <input type="text" id="generatekeyinput" onkeypress="ninja.seeder.seedKeyPress(event);" /><br />
-          <div id="seedpooldisplay"></div>
+					<div id="rightArea">
+						<div id="progress-bar" class="fullyRounded">
+						<div id="progress-bar-percentage" class="fullyRounded 1percentwidth"></div>
+						</div>
 
-          <div id="rightArea">
-            <div id="progress-bar" class="fullyRounded">
-              <div id="progress-bar-percentage" class="fullyRounded 1percentwidth"></div>
-            </div>
+						<div id="seedSkipper">
+						<a href="#" class="nicerButton 100pxwidth" onClick="ninja.seeder.seedCount = ninja.seeder.seedLimit; ninja.seeder.seed();">Skip &raquo;</a>
+						<p id="skipMessage" class="i18n">You may skip this step if you do not plan to use the random key generator.</p>
+						</div>
+					</div>
+				</div> -->
+				<!-- <div id="walletCommands" class="commands">
+					<div id="singlecommands" class="row">
+						<span><input type="button" id="newaddress" value="Generate New Address" onclick="ninja.wallets.singlewallet.generateNewAddressAndKey();" /></span>
+						<span class="print"><input type="button" name="print" value="Print" id="singleprint" onclick="window.print();" /></span>
+					</div>
+				</div> -->
+				<div id="keyarea" class="keyarea">
+					<div class="public">
+						<div id="qrcode_public" class="qrcode_public qrcode"></div>
+						<div class="pubaddress qrdetails">
+							<span class="label i18n" id="singlelabelbitcoinaddress">PUBLIC ADDRESS</span> <span id="singleshare" class="i18n">(SHARE)</span>
+							<br><br>
+							<span class="output" id="btcaddress"></span>
+						</div>
+					</div>
+					<div class="private">
+						<div id="qrcode_private" class="qrcode_private qrcode"></div>
+						<div class="privwif qrdetails">
+							<span class="label i18n" id="singlelabelprivatekey">PRIVATE ADDRESS</span> <span id="singlesecret" class="i18n">(DO NOT SHARE)</span>
+							<br><br>
+							<span class="output" id="btcprivwif"></span>
+						</div>
+					</div>
+				</div>
+				
+				<div id="paperwalletarea">
+					<h2>PAPER WALLET</h2>
+					<img src="./images/paperwallet.jpg" class="paperwalletpreview">
+					<div id="paperwalletqrpublic"></div>
+					<div id="paperwalletqrprivate"></div>
+					<div id="paperwalletpublic"></div>
+					<div id="paperwalletprivate"></div>
 
-            <div id="seedSkipper">
-              <a href="#" class="nicerButton 100pxwidth" onClick="ninja.seeder.seedCount = ninja.seeder.seedLimit; ninja.seeder.seed();">Skip &raquo;</a>
-              <p id="skipMessage" class="i18n">You may skip this step if you do not plan to use the random key generator.</p>
-            </div>
-          </div>
-        </div>
+					<span class="print"><img src="./images/Print_Button.jpg" onclick="window.print();" /></span>
+				</div>
 
-        <div id="walletCommands" class="commands">
-          <div id="singlecommands" class="row">
-            <span><input type="button" id="newaddress" value="Generate New Address" onclick="ninja.wallets.singlewallet.generateNewAddressAndKey();" /></span>
-            <span class="print"><input type="button" name="print" value="Print" id="singleprint" onclick="window.print();" /></span>
-          </div>
-        </div>
-        <div id="keyarea" class="keyarea">
-          <div class="public">
-            <div class="pubaddress">
-              <span class="label i18n" id="singlelabelbitcoinaddress">Public Address</span>
-            </div>
-            <div id="qrcode_public" class="qrcode_public"></div>
-            <div class="pubaddress">
-              <span class="output" id="btcaddress"></span>
-            </div>
-            <div id="singleshare" class="i18n">SHARE</div>
-          </div>
-          <div class="private">
-            <div class="privwif">
-              <span class="label i18n" id="singlelabelprivatekey">Private Key (Wallet Import Format)</span>
-            </div>
-            <div id="qrcode_private" class="qrcode_private"></div>
-            <div class="privwif">
-              <span class="output" id="btcprivwif"></span>
-            </div>
-            <div id="singlesecret" class="i18n">SECRET</div>
-          </div>
-        </div>
+				<div id="singlesafety">
+					<div class="firstHalfSingleSafety">
+						<h2>***IMPORTANT***<br>READ ALL INSTRUCTIONS BELOW</h2>
+						<br>
+						<h3 id="securitystep0title" class="i18n">Step 1. Download Locally</h3>
+						<p id="securitystep0" class="i18n">
+						First step is to <strong>download</strong> this website from <a href="https://github.com/ChainZilla/KomodoPaperWalletGenerator" style="text-decoration:underline;">Github</a> and open the index.html file directly from your computer. For extra security, <strong>unplug your Internet access</strong> while generating your wallet.
+						</p>
+						<h3 id="securitystep1title" class="i18n">Step 2. Generate new address</h3>
+						<p id="securitystep1" class="i18n">
+						Choose your currency and click on the "Generate new address" button.
+						</p>
+						<h3 id="securitystep2title" class="i18n">Step 3. Print the Paper Wallet</h3>
+						<p id="securitystep2" class="i18n">
+						Click the Paper Wallet tab and print the page on high quality setting. <strong>Never save the page as a PDF file to print it later since a file is more likely to be hacked than a piece of paper.</strong>
+						</p>
+						<h3 id="securitystep4title" class="i18n">Step 4. Share your public address</h3>
+						<p id="securitystep4" class="i18n">
+						Use your public address to receive money from other crypto-currency users. You can share your public address as much as you want.
+						</p>
+						<h3 id="securitystep5title" class="i18n">Step 5. Keep your private key secret</h3>
+						<p id="securitystep5" class="i18n">
+						The private key is literally the keys to your coins, if someone was to obtain it, they could withdraw the funds currently in the wallet, and any funds that might be deposited in that wallet.
+						</p>
+						<p>
+						<strong id="securitystep6" class="i18n">Always test spending a small amount before receiving any large payments.</strong><br /><br />
+						</p>
+					</div>
+					<!-- <div class="secondHalfSingleSafety">
+						<img class="frontPageImage" src="images/overview.png" alt="Overview image of 4 paper wallet" />
 
-        <div id="singlesafety">
-          <div class="firstHalfSingleSafety">
+						<div class="securityChecklist">
+						<b id="securitychecktitle" class="i18n">Security Checklist :</b>
 
-            <h3 id="securitystep0title" class="i18n">Step 0. Follow the security checklist recommendation</h3>
-            <p id="securitystep0" class="i18n">
-              First step is to <strong>download</strong> this website from <a href="https://github.com/MichaelMure/PaperWallet/archive/master.zip">Github</a> and open the index.html file directly from your computer. It's just too easy to sneak some evil code in the 6000+ lines of javascript to leak your private key, and you don't want to see your fund stolen. Code version control make it much easier to cross-check what actually run. For extra security, <strong>unplug your Internet access</strong> while generating your wallet.
-            </p>
-            <h3 id="securitystep1title" class="i18n">Step 1. Generate new address</h3>
-            <p id="securitystep1" class="i18n">
-              Choose your currency and click on the "Generate new address" button.
-            </p>
-            <h3 id="securitystep2title" class="i18n">Step 2. Print the Paper Wallet</h3>
-            <p id="securitystep2" class="i18n">
-              Click the Paper Wallet tab and print the page on high quality setting. <strong>Never save the page as a PDF file to print it later since a file is more likely to be hacked than a piece of paper.</strong>
-            </p>
-            <h3 id="securitystep3title" class="i18n">Step 3. Fold the Paper Wallet</h3>
-            <p id="securitystep3" class="i18n">
-              Fold your new Paper wallet following the lines.
-              <img src="images/foldinginstructions.png" alt="Fold in half lengthwise, and then in three widthwise." /><br />
-              You can insert one side inside the other to lock the wallet.
-            </p>
+						<ul>
+						<li id="envSecurityCheck"></li>
 
-            <h3 id="securitystep4title" class="i18n">Step 4. Share your public address</h3>
-            <p id="securitystep4" class="i18n">
-              Use your public address to receive money from other crypto-currency users. You can share your public address as much as you want.
-            </p>
-            <h3 id="securitystep5title" class="i18n">Step 5. Keep your private key secret</h3>
-            <p id="securitystep5" class="i18n">
-              The private key is literally the keys to your coins, if someone was to obtain it, they could withdraw the funds currently in the wallet, and any funds that might be deposited in that wallet.
-            </p>
-            <p>
-              <strong id="securitystep6" class="i18n">Please test spending a small amount before receiving any large payments.</strong><br /><br />
-            </p>
+						<li id="browserSecurityCheck"></li>
 
+						<li id="securitychecklivecd" class="i18n">
+							Are you using a secure operating system guaranteed to be free of spyware and viruses, for example, an Ubuntu LiveCD?
+						</li>
+						</ul>
+						</div>
+					</div> -->
+				</div>
 
-          </div>
-          <div class="secondHalfSingleSafety">
-            <img class="frontPageImage" src="images/overview.png" alt="Overview image of 4 paper wallet" />
+				<div id="faqZone">
+					<h2>FAQ</h2>
 
-            <div class="securityChecklist">
-              <b id="securitychecktitle" class="i18n">Security Checklist :</b>
+					<h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion1');ninja.toggleFaqQuestion('faqQuestion1.1')">Is it safe ?</a></h3>
+					<div class="faqAnswer" id="faqQuestion1">
+						<p>
+							We try to make it that way ! The core of the tool, that generate the keys is 99% the same as the well reviewed bitaddress.org. We only changed it to be able to generate addresses for different crypto-currencies.
+						</p>
+						<p>
+							We think that having a unique generator for multiple currencies lead to a much better reviewed tool for all than having a myriad of half-backed generators.
+							Changes made to this generator are available on Github in small and divided commits and those are easy to review and reuse.
+							Walletgenerator.net use the same security measures as the original project. All-in-one html document, no ajax, no analytics, no external calls, no CDN that can inject anything they want. And trust us, we have seen some nasty things when reviewing some wallet generator.
+						</p>
+					</div>
 
-              <ul>
-              <li id="envSecurityCheck"></li>
+					<h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion2');">Why should I use a paper wallet ?</a></h3>
+					<p class="faqAnswer" id="faqQuestion2">
+						Advantages of a paper wallet are multiple:<br/><br/>
+						<span class="faqListBullet">&mdash;</span> They are not subject to malwares and keyloggers<br/>
+						<span class="faqListBullet">&mdash;</span> You don’t rely on a third party’s honesty or capacity to protect your coins<br/>
+						<span class="faqListBullet">&mdash;</span> You won't lose your coins when your device break
+					</p>
 
-              <li id="browserSecurityCheck"></li>
+					<h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion3');">How to use a paper wallet ?</a></h3>
+					<p class="faqAnswer" id="faqQuestion3">
+						Once you have generated and printed a wallet, you can send coins to the public address, like for any wallet. Store your paper wallet securely. It contains everything that is needed to spend your funds. Consider using BIP38 to secure your paper wallet with a password.
+					</p>
 
-              <li id="securitychecklivecd" class="i18n">
-                Are you using a secure operating system guaranteed to be free of spyware and viruses, for example, an Ubuntu LiveCD?
-              </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+					<h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion4');">How to spend the coins stored in a paper wallet ?</a></h3>
+					<p class="faqAnswer" id="faqQuestion4">
+						You will need to import your private key in a real client, that you can download from the currency website. The exact method to do that will depend on the client. If there is no integrated method, you can usually fall back to the debug console and use the command “importprivkey [yourprivatekey]“.
+					</p>
 
-        <div id="faqZone">
-          <h2>Frequently asked questions :</h2>
+					<h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion7');">Can you add support for cryptocurrency XYZ ?</a></h3>
+					<p class="faqAnswer" id="faqQuestion7">
+						Absolutely ! To help us do that, you can <a href="https://docs.google.com/forms/d/1nPIvukVWxlaveUPEUAEhGKwvEuwJiPSgs5zc5LhDVpk/viewform">fill this  form</a>. But keep in mind that there is some currency that we cannot support. If the developers made some change in the address format, we won’t hack the crypto core of the project and take the risk to tamper the security of the others currencies.
+						You can also implement the support yourself by following this <a href="https://github.com/MichaelMure/WalletGenerator.net/wiki/How-to-add-a-new-currency">non-developer How-To</a>
+					</p>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion1');ninja.toggleFaqQuestion('faqQuestion1.1')">&#8226; Is it safe ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion1">
-            We try to make it that way ! The core of the tool, that generate the keys is 99% the same as the well reviewed bitaddress.org. We only changed it to be able to generate addresses for different crypto-currencies.
-          </p>
-          <p class="faqAnswer" id="faqQuestion1.1">
-We think that having a unique generator for multiple currencies lead to a much better reviewed tool for all than having a myriad of half-backed generators.
-Changes made to this generator are available on Github in small and divided commits and those are easy to review and reuse.
-Walletgenerator.net use the same security measures as the original project. All-in-one html document, no ajax, no analytics, no external calls, no CDN that can inject anything they want. And trust us, we have seen some nasty things when reviewing some wallet generator.
-          </p>
+					<h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion8');">Why should I make a donation ?</a></h3>
+					<p class="faqAnswer" id="faqQuestion8">
+						Donations money are used to pay our hosting service provider, but it’ll also be used to make walletgenerator.net more secure as we plan to organize a CrowdCurity campain as soon as we get enough money to pay for it.
+					</p>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion2');">&#8226; Why should I use a paper wallet ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion2">
-              Advantages of a paper wallet are multiple:<br/><br/>
-              <span class="faqListBullet">&#8658;</span> They are not subject to malwares and keyloggers<br/>
-              <span class="faqListBullet">&#8658;</span> You don’t rely on a third party’s honesty or capacity to protect your coins<br/>
-              <span class="faqListBullet">&#8658;</span> You won't lose your coins when your device break
-          </p>
+					<h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion9');">I found a bug, what shall I do ?</a></h3>
+					<p class="faqAnswer" id="faqQuestion9">
+						You can report bugs using GitHub. You can also contact us using our Twitter account (<a href="http://twitter.com/WalletGenerator" target="_blank">@WalletGenerator</a>). Just try to explain clearly what is wrong and we will try to fix the bug as soon as possible.
+					</p>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion3');">&#8226; How to use a paper wallet ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion3">
-            Once you have generated and printed a wallet, you can send coins to the public address, like for any wallet. Store your paper wallet securely. It contains everything that is needed to spend your funds. Consider using BIP38 to secure your paper wallet with a password.
-          </p>
+					<h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion10');">Who are you ?</a></h3>
+					<p class="faqAnswer" id="faqQuestion10">
+						We are just two random guy having fun with a side project.
+					</p>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion4');">&#8226; How to spend the coins stored in a paper wallet ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion4">
-            You will need to import your private key in a real client, that you can download from the currency website. The exact method to do that will depend on the client. If there is no integrated method, you can usually fall back to the debug console and use the command “importprivkey [yourprivatekey]“.
-          </p>
+					<h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion11');">How can I help ?</a></h3>
+					<p class="faqAnswer" id="faqQuestion11">
+						Donation are always welcome, but you can also help us translate the website. It's really easy. Just add "?i18nextract=LANGUAGECODE" in the end of the url (for instance http://walletgenerator.net/?i18nextract=es for Spanish). You will see at the end of the page a pre-filled javascript array ready to be translated. Translate or correct it, and send it to us the way you prefer. Even partial translation are helpful !
+					</p>
+				</div>
+			</div>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion5');">&#8226; How walletgenerator.net is different than another wallet generator ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion5">
-            It’s not that different. You will find another design for the paper wallet and some improvements here and there. The big difference is that this is a unique project for a lot of currencies, so more people can review it and check its safety.
-          </p>
+			<div id="detailarea" class="walletarea">
+				<div id="detailarea-inner">
+					<div id="detailcommands" class="commands">
+						<div class="row extra qrzone">
+							<span class="qrinput">
+								<span class="qrcodeinputwrapper">
+									<input type="text" id="detailprivkey" value="" placeholder="Enter private key" autocomplete="off" onFocus="this.select();" onKeyPress="if (event.keyCode == 13) ninja.wallets.detailwallet.viewDetails();" />
+									<input type="button" class="button" id="detailview" value="+" onclick="ninja.wallets.detailwallet.viewDetails();" />
+									<!--<img onClick="ninja.wallets.detailwallet.qrscanner.start()" />  -->
+								</span>
+							</span>
+							<!-- <span class="print">
+								<input type="button" name="print" id="detailprint" value="Print" onclick="window.print();" />
+							</span> -->
+						</div>
+						<hr>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion7');">&#8226; Can you add support for cryptocurrency XYZ ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion7">
-            Absolutely ! To help us do that, you can <a href="https://docs.google.com/forms/d/1nPIvukVWxlaveUPEUAEhGKwvEuwJiPSgs5zc5LhDVpk/viewform">fill this  form</a>. But keep in mind that there is some currency that we cannot support. If the developers made some change in the address format, we won’t hack the crypto core of the project and take the risk to tamper the security of the others currencies.
-            You can also implement the support yourself by following this <a href="https://github.com/MichaelMure/WalletGenerator.net/wiki/How-to-add-a-new-currency">non-developer How-To</a>
-          </p>
+						<div id="paperqrscanner">
+							<div class="background"></div>
+							<div id="mainbody" class="dialog instructionsarea">
+								<h2 id="qrcaminstructiontitle" class="i18n">Scan QR code using your camera</h2>
+								<div id="paperqrnotsupported" class="hide redColor i18n">Sorry, but your web browser does not support the HTML5 camera controls. Try using a recent version of Firefox (recommended), Chrome or Opera.</div>
+								<div id="paperqrpermissiondenied" class="hide redColor i18n">
+									<p>Permission denied. Your browser should display a message requesting access to your camera. Please click the "Allow" button to enable the camera.</p>
+								</div>
+								<div id="paperqrerror" class="redColor"></div>
+								<div id="paperqroutput"></div>
+								<button onClick="ninja.wallets.detailwallet.qrscanner.stop()">Cancel</button>
+							</div>
+						</div>
+						<div id="detailbip38commands">
+							<span><label id="detaillabelpassphrase" class="i18n">Enter BIP38 Passphrase</label> <input type="text" id="detailprivkeypassphrase" value="" onfocus="this.select();" onkeypress="if (event.keyCode == 13) ninja.wallets.detailwallet.viewDetails();" /></span>
+							<span><input type="button" id="detaildecrypt" value="Decrypt BIP38" onclick="ninja.wallets.detailwallet.viewDetails();" /></span>
+						</div>
+					</div>
+					<div id="detailkeyarea">
+						<div class="notes">
+							<span id="detaillabelnote1" class="i18n">Your Private Key is a unique secret number that only you know. It can be encoded in a number of different formats. Below we show the Public Address and Public Key that corresponds to your Private Key as well as your Private Key in the most popular encoding formats (WIF, WIFC, HEX, B64).</span>
+							<br /><br />
+						</div>
+						<div id="detailkeydetails">
+							<div class="pubqr keyarea">
+								<!-- <div class="item">
+								<span class="label i18n" id="detaillabelbitcoinaddress">Public Address</span>
+								<div id="detailqrcodepublic" class="qrcode_public"></div>
+								<span class="output" id="detailaddress"></span>
+								</div> -->
+								<div class="public">
+									<div id="detailqrcodepubliccomp" class="qrcode_public qrcode"></div>
+									<div class="pubaddress qrdetails">
+										<span class="label i18n" id="detaillabelbitcoinaddresscomp">PUBLIC ADDRESS COMPRESSED</span>
+										<br>
+										<span class="output" id="detailaddresscomp"></span>
+									</div>
+								</div>
+							</div>
+							<div class="keyarea2">
+								<span class="label i18n" id="detaillabelpublickey">PUBLIC KEY (130 characters [0-9A-F]):</span>
+								<span class="output pubkeyhex" id="detailpubkey"></span>
+							</div>
+							<div class="keyarea2">
+								<span class="label i18n" id="detaillabelpublickeycomp">PUBLIC KEY (compressed, 66 characters [0-9A-F]):</span>
+								<span class="output" id="detailpubkeycomp"></span>
+							</div>
+							<hr />
+							<div class="privqr keyarea">
+								<!-- <div class="item">
+								<span class="label"><span id="detaillabelprivwif" class="i18n">Private Key WIF<br />51 characters Base58</span></span>
+								<div id="detailqrcodeprivate" class="qrcode_private"></div>
+								<span class="output" id="detailprivwif"></span>
+								</div> -->
+								<div class="private">
+									<div id="detailqrcodeprivatecomp" class="qrcode_private qrcode"></div>
+									<div class="privwif qrdetails">
+										<span class="label"><span id="detaillabelprivwifcomp" class="i18n">PRIVATE KEY COMPRESSED<br />52 characters Base58</span></span>
+										<span class="output" id="detailprivwifcomp"></span>
+									</div>
+								</div>
+							</div>
+							<div class="keyarea2">
+								<span class="label i18n" id="detaillabelprivhex">PRIVATE KEY HEXADECIMAL FORMAT (64 characters [0-9A-F]):</span>
+								<span class="output" id="detailprivhex"></span>
+							</div>
+							<div class="keyarea2">
+								<span class="label i18n" id="detaillabelprivb64">PRIVATE KEY BASE64 (44 characters):</span>
+								<span class="output" id="detailprivb64"></span>
+							</div>
+							<div class="item displayNone" id="detailmini">
+								<span class="label i18n" id="detaillabelprivmini">Private Key Mini Format (22, 26 or 30 characters):</span>
+								<span class="output" id="detailprivmini"></span>
+							</div>
+							<div class="item displayNone" id="detailb6">
+								<span class="label i18n" id="detaillabelprivb6">Private Key Base6 Format (99 characters [0-5]):</span>
+								<span class="output" id="detailprivb6"></span>
+							</div>
+							<div class="item displayNone" id="detailbip38">
+								<span class="label i18n" id="detaillabelprivbip38">Private Key BIP38 Format (58 characters Base58):</span>
+								<span class="output" id="detailprivbip38"></span>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="faqs">
+						<div id="detailfaq1" class="faq">
+							<div id="detailq1" class="question" onclick="ninja.wallets.detailwallet.openCloseFaq(1);">
+							<span id="detaillabelq1" class="i18n">How do I make a wallet using dice? What is B6?</span>
+							<div id="detaile1" class="more"></div>
+							</div>
+							<div id="detaila1" class="answer i18n">An important part of creating a crypto-currency wallet is ensuring the random numbers used to create the wallet are truly random. Physical randomness is better than computer generated pseudo-randomness. The easiest way to generate physical randomness is with dice. To create a crypto-currency private key you only need one six sided die which you roll 99 times. Stopping each time to record the value of the die. When recording the values follow these rules: 1=1, 2=2, 3=3, 4=4, 5=5, 6=0. By doing this you are recording the big random number, your private key, in B6 or base 6 format. You can then enter the 99 character base 6 private key into the text field above and click View Details. You will then see the public address associated with your private key. You should also make note of your private key in WIF format since it is more widely used.</div>
+						</div>
+					</div> -->
+				</div>
+			</div>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion8');">&#8226; Why should I make a donation ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion8">
-            Donations money are used to pay our hosting service provider, but it’ll also be used to make walletgenerator.net more secure as we plan to organize a CrowdCurity campain as soon as we get enough money to pay for it.
-          </p>
+			<div id="decryptseedarea" class="walletarea">
+				<div class="decryptseedarea-inner">
+					<span class="label i18n toUpperCase">Insert contents of .pin file below</span>
+					<hr>
+					<textarea rows="20" cols="120" id="encryptedseed"></textarea>
+					<input type="password" id="encryptedseedkey" value="" placeholder="Enter decryption key here" autocomplete="off" onfocus="this.select();">
+					<input type="button" class="button" id="encryptedseeddecrypt" value="Decrypt" onclick="ninja.wallets.decryptseed.decode();">
+					<div id="decryptseedarea-inner-res" class="decryptseedarea-inner-res">
+						<hr />
+						<div id="decryptseedarea-inner-res-msg" class="decryptseedarea-inner-res-msg"></div>
+					</div>
+				</div>
+			</div>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion9');">&#8226; I found a bug, what shall I do ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion9">
-            You can report bugs using GitHub. You can also contact us using our Twitter account (<a href="http://twitter.com/WalletGenerator" target="_blank">@WalletGenerator</a>). Just try to explain clearly what is wrong and we will try to fix the bug as soon as possible.
-          </p>
+			<div id="generateseedarea" class="walletarea">
+				<div class="generateseedarea-inner">
+					<span class="label i18n toUpperCase">Generate Seed</span>
+					<hr>
+					<div class="generateseedarea-seed-type">
+						Seed Type: Agama/BarterDEX (256-bit)
+						<!-- <label for="seedtype1"><input type="radio" id="seedtype1" name="seedtype" value="seedtype1" onClick="ninja.wallets.generateseed.generate(256)"> Agama/BarterDEX (256-bit)</label>
+						<br>
+						<label for="seedtype2"><input type="radio" id="seedtype2" name="seedtype" value="seedtype2" onClick="ninja.wallets.generateseed.generate(160)"> Waves (160-bit)</label>
+						<br>
+						<label for="seedtype3"><input type="radio" id="seedtype3" name="seedtype" value="seedtype3" onClick="ninja.wallets.generateseed.generate(128)"> NXT (128-bit)</label> -->
+					</div>
+					<hr>
+					<span class="label i18n label-padding">This is your new seed. Please keep it extra secure and don't use any smart editors to store it.</span>
+					<div class="generateseedarea-seed" id="generateseedarea-seed"></div>
+				</div>
+			</div>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion10');">&#8226; Who are you ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion10">
-            We are just two random guy having fun with a side project.
-          </p>
+			<div id="getprivkeysarea" class="walletarea">
+				<div class="getprivkeysarea-inner">
+					<span class="label i18n toUpperCase">Provide your Agama/BarterDEX seed to retrieve private keys</span>
+					<hr>
+					<input type="password" id="getprivkeysarea-seed" class="getprivkeysarea-seed" value="" placeholder="Enter your seed here" autocomplete="off" onfocus="this.select();">
+					<span class="default-text toUpperCase toBold">Coin</span> <select id="getprivkeysarea-select" class="getprivkeysarea-select"></select>
+					<input type="button" class="button" value="Get Private Keys" onclick="ninja.wallets.getprivkeys.get();">
+					<div id="getprivkeysarea-inner-res" class="getprivkeysarea-inner-res">
+						<hr />
+						<div id="getprivkeysarea-inner-res-msg" class="getprivkeysarea-inner-res-msg"></div>
+					</div>
+				</div>
+			</div>
 
-          <h3 class="faqQuestion"><a class="faqLink" onclick="ninja.toggleFaqQuestion('faqQuestion11');">&#8226; How can I help ?</a></h3>
-          <p class="faqAnswer" id="faqQuestion11">
-            Donation are always welcome, but you can also help us translate the website. It's really easy. Just add "?i18nextract=LANGUAGECODE" in the end of the url (for instance http://walletgenerator.net/?i18nextract=es for Spanish). You will see at the end of the page a pre-filled javascript array ready to be translated. Translate or correct it, and send it to us the way you prefer. Even partial translation are helpful !
-          </p>
+			<div id="getbip39keysarea" class="walletarea">
+				<div class="getbip39keysarea-inner">
+					<span class="label i18n toUpperCase">Provide your Ledger or any other bip39 compatible seed to retrieve KMD private keys</span>
+					<span class="label small i18n toItalics">Note: key search is a resource intensive operation. Please use small increments when choosing selector options. Otherwise it may result in browser hang for a long period of time.</span>
+					<hr>
+					<input type="password" id="getbip39keysarea-seed" class="getbip39keysarea-seed" value="" placeholder="Enter your seed here" autocomplete="off" onfocus="this.select();">
+					<input type="text" id="getbip39keysarea-search" class="getbip39keysarea-seed" value="" placeholder="Enter a KMD address to search for" autocomplete="off" onfocus="this.select();">
+					<div class="getprivkeysarea-selectors">
+						<span class="default-text toUpperCase toBold">Number of accounts</span>
+						<select id="getprivkeysarea-select-accounts-count" class="getprivkeysarea-select" value="2">
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+					</div>
+					<div class="getprivkeysarea-selectors">
+						<span class="default-text toUpperCase toBold">Number of addresses</span>
+						<select id="getprivkeysarea-select-addresses-count" class="getprivkeysarea-select" value="2">
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+					</div>
+					<div class="getprivkeysarea-selectors">
+						<span class="default-text toUpperCase toBold">Number of accounts offset</span>
+						<select id="getprivkeysarea-select-accounts-count-offset" class="getprivkeysarea-select" value="0">
+							<option value="0">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+					</div>
+					<div class="getprivkeysarea-selectors">
+						<span class="default-text toUpperCase toBold">Number of addresses offset</span>
+						<select id="getprivkeysarea-select-addresses-count-offset" class="getprivkeysarea-select" value="0">
+							<option value="0">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+					</div>
+					<input type="button" class="button" id="bip39privkeybutton" value="Get Private Keys" onclick="ninja.wallets.getbip39keys.get();">
+					<div id="getbip39keysarea-inner-res" class="getbip39keysarea-inner-res">
+						<hr />
+						<div id="getbip39keysarea-inner-res-msg" class="getbip39keysarea-inner-res-msg"></div>
+					</div>
+				</div>
+			</div>
 
-        </div>
-      </div>
+			<div id="paperarea">
+				<div class="commands">
+				<div id="papercommands" class="row">
+					<span><label id="paperlabelencrypt" for="paperencrypt" class="i18n">BIP38 Encrypt?</label> <input type="checkbox" id="paperencrypt" onchange="ninja.wallets.paperwallet.toggleEncrypt(this);" /></span>
+					<span><label id="paperlabelBIPpassphrase" for="paperpassphrase" class="i18n">Passphrase:</label> <input type="text" id="paperpassphrase" /></span>
 
-      <div id="paperarea">
-        <div class="commands">
-          <div id="papercommands" class="row">
-            <span><label id="paperlabelencrypt" for="paperencrypt" class="i18n">BIP38 Encrypt?</label> <input type="checkbox" id="paperencrypt" onchange="ninja.wallets.paperwallet.toggleEncrypt(this);" /></span>
-            <span><label id="paperlabelBIPpassphrase" for="paperpassphrase" class="i18n">Passphrase:</label> <input type="text" id="paperpassphrase" /></span>
+					<br/>
+					<input type="button" id="papergenerate" value="Randomly generate" onclick="ninja.wallets.paperwallet.build(document.getElementById('paperpassphrase').value);" />
+					<span>OR</span>
+					<input placeholder="Enter your own WIF private key" id="suppliedPrivateKey" name="suppliedPrivateKey" spellcheck="false" />&nbsp;
+					<input type="button" id="papergenerate" value="Apply &raquo;" onClick="ninja.wallets.paperwallet.testAndApplyVanityKey();" />
 
-            <br/>
-            <input type="button" id="papergenerate" value="Randomly generate" onclick="ninja.wallets.paperwallet.build(document.getElementById('paperpassphrase').value);" />
-            <span>OR</span>
-            <input placeholder="Enter your own WIF private key" id="suppliedPrivateKey" name="suppliedPrivateKey" spellcheck="false" />&nbsp;
-            <input type="button" id="papergenerate" value="Apply &raquo;" onClick="ninja.wallets.paperwallet.testAndApplyVanityKey();" />
+					<span class="print"><input type="button" name="print" value="Print" id="paperprint" onclick="window.print();" /></span>
+				</div>
 
-            <span class="print"><input type="button" name="print" value="Print" id="paperprint" onclick="window.print();" /></span>
-          </div>
+				</div>
+				<div id="paperkeyarea"></div>
+			</div>
 
-        </div>
-        <div id="paperkeyarea"></div>
-      </div>
+			<div id="bulkarea" class="walletarea">
+				<div class="commands">
+				<div id="bulkcommands" class="row">
+					<span><label id="bulklabelstartindex" for="bulkstartindex" class="i18n">Start index:</label> <input type="text" id="bulkstartindex" value="1" /></span>
+					<span><label id="bulklabelrowstogenerate" for="bulklimit" class="i18n">Rows to generate:</label> <input type="text" id="bulklimit" value="3" /></span>
+					<span><label id="bulklabelcompressed" for="bulkcompressed" class="i18n">Compressed addresses?</label> <input type="checkbox" id="bulkcompressed" /></span>
+					<span><input type="button" id="bulkgenerate" value="Generate" onclick="ninja.wallets.bulkwallet.buildCSV(document.getElementById('bulklimit').value * 1, document.getElementById('bulkstartindex').value * 1, document.getElementById('bulkcompressed').checked);" /> </span>
+					<span class="print"><input type="button" name="print" id="bulkprint" value="Print" onclick="window.print();" /></span>
+				</div>
+				</div>
+				<div class="body">
+				<span class="label i18n" id="bulklabelcsv">Comma Separated Values: Index,Address,Private Key (WIF)</span>
+				<textarea rows="20" cols="88" id="bulktextarea"></textarea>
+				</div>
+			</div>
 
-      <div id="bulkarea" class="walletarea">
-        <div class="commands">
-          <div id="bulkcommands" class="row">
-            <span><label id="bulklabelstartindex" for="bulkstartindex" class="i18n">Start index:</label> <input type="text" id="bulkstartindex" value="1" /></span>
-            <span><label id="bulklabelrowstogenerate" for="bulklimit" class="i18n">Rows to generate:</label> <input type="text" id="bulklimit" value="3" /></span>
-            <span><label id="bulklabelcompressed" for="bulkcompressed" class="i18n">Compressed addresses?</label> <input type="checkbox" id="bulkcompressed" /></span>
-            <span><input type="button" id="bulkgenerate" value="Generate" onclick="ninja.wallets.bulkwallet.buildCSV(document.getElementById('bulklimit').value * 1, document.getElementById('bulkstartindex').value * 1, document.getElementById('bulkcompressed').checked);" /> </span>
-            <span class="print"><input type="button" name="print" id="bulkprint" value="Print" onclick="window.print();" /></span>
-          </div>
-        </div>
-        <div class="body">
-          <span class="label i18n" id="bulklabelcsv">Comma Separated Values: Index,Address,Private Key (WIF)</span>
-          <textarea rows="20" cols="88" id="bulktextarea"></textarea>
-        </div>
-      </div>
+			<div id="brainarea" class="walletarea">
+				<div id="braincommands" class="commands">
+				<div class="row">
+					<span id="brainlabelenterpassphrase" class="label"><label id="brainlabelenterpassphraselbl" class="i18n" for="brainpassphrase">Enter Passphrase: </label></span>
+					<input tabindex="1" type="password" id="brainpassphrase" value="" onfocus="this.select();" onkeypress="if (event.keyCode == 13) ninja.wallets.brainwallet.view();" />
+					<span><label id="brainlabelshow" for="brainpassphraseshow">Show?</label> <input type="checkbox" id="brainpassphraseshow" onchange="ninja.wallets.brainwallet.showToggle(this);" /></span>
+					<span><label id="brainlabeliguana" for="brainpassphraseiguana">Iguana compatible?</label> <input type="checkbox" id="brainpassphraseiguana" /></span>
+					<span class="print"><input type="button" name="print" id="brainprint" value="Print" onclick="window.print();" /></span>
+				</div>
+				<div class="row extra">
+					<span class="label" id="brainlabelconfirm"><label id="brainlabelconfirmlbl" class="i18n" for="brainpassphraseconfirm">Confirm Passphrase: </label></span>
+					<input tabindex="2" type="password" id="brainpassphraseconfirm" value="" onfocus="this.select();" onkeypress="if (event.keyCode == 13) ninja.wallets.brainwallet.view();" />
+					<span><input tabindex="3" type="button" id="brainview" value="View" onclick="ninja.wallets.brainwallet.view();" /></span>
+					<span id="brainalgorithm" class="notes right i18n">Algorithm: SHA256 (passphrase)</span>
+				</div>
+				<div class="row extra"><span id="brainwarning"></span></div>
+				<div class="row extra errorMsg"><span id="brainerror"></span></div>
+				</div>
+				<div id="brainkeyarea" class="keyarea">
+				<div class="public">
+					<div id="brainqrcodepublic" class="qrcode_public"></div>
+					<div class="pubaddress">
+					<span class="label i18n" id="brainlabelbitcoinaddress">Public Address:</span>
+					<span class="output" id="brainbtcaddress"></span>
+					</div>
+				</div>
+				<div class="private">
+					<div id="brainqrcodeprivate" class="qrcode_private"></div>
+					<div class="privwif">
+					<span class="label i18n" id="brainlabelprivatekey">Private Key (Wallet Import Format):</span>
+					<span class="output" id="brainbtcprivwif"></span>
+					</div>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  	<div id="footerbg">
+		<div id="footer" class="footer">
+			<h5>Get Involved!</h5>
 
-      <div id="brainarea" class="walletarea">
-        <div id="braincommands" class="commands">
-          <div class="row">
-            <span id="brainlabelenterpassphrase" class="label"><label id="brainlabelenterpassphraselbl" class="i18n" for="brainpassphrase">Enter Passphrase: </label></span>
-            <input tabindex="1" type="password" id="brainpassphrase" value="" onfocus="this.select();" onkeypress="if (event.keyCode == 13) ninja.wallets.brainwallet.view();" />
-            <span><label id="brainlabelshow" for="brainpassphraseshow">Show?</label> <input type="checkbox" id="brainpassphraseshow" onchange="ninja.wallets.brainwallet.showToggle(this);" /></span>
-            <span><label id="brainlabeliguana" for="brainpassphraseiguana">Iguana compatible?</label> <input type="checkbox" id="brainpassphraseiguana" /></span>
-            <span class="print"><input type="button" name="print" id="brainprint" value="Print" onclick="window.print();" /></span>
-          </div>
-          <div class="row extra">
-            <span class="label" id="brainlabelconfirm"><label id="brainlabelconfirmlbl" class="i18n" for="brainpassphraseconfirm">Confirm Passphrase: </label></span>
-            <input tabindex="2" type="password" id="brainpassphraseconfirm" value="" onfocus="this.select();" onkeypress="if (event.keyCode == 13) ninja.wallets.brainwallet.view();" />
-            <span><input tabindex="3" type="button" id="brainview" value="View" onclick="ninja.wallets.brainwallet.view();" /></span>
-            <span id="brainalgorithm" class="notes right i18n">Algorithm: SHA256 (passphrase)</span>
-          </div>
-          <div class="row extra"><span id="brainwarning"></span></div>
-          <div class="row extra errorMsg"><span id="brainerror"></span></div>
-        </div>
-        <div id="brainkeyarea" class="keyarea">
-          <div class="public">
-            <div id="brainqrcodepublic" class="qrcode_public"></div>
-            <div class="pubaddress">
-              <span class="label i18n" id="brainlabelbitcoinaddress">Public Address:</span>
-              <span class="output" id="brainbtcaddress"></span>
-            </div>
-          </div>
-          <div class="private">
-            <div id="brainqrcodeprivate" class="qrcode_private"></div>
-            <div class="privwif">
-              <span class="label i18n" id="brainlabelprivatekey">Private Key (Wallet Import Format):</span>
-              <span class="output" id="brainbtcprivwif"></span>
-            </div>
-          </div>
-        </div>
-      </div>
+			<div class="mailer"><a href="mailto:contact@chainzilla.io">contact@chainzilla.io</a></div>
 
-      <div id="detailarea" class="walletarea">
-        <div id="detailcommands" class="commands">
+			<div class="social">
+				<a href="https://t.me/KomodoPlatform_Official"><img src="./images/Telegram_logo.png"></a>
+				<a href="https://discord.gg/kS3vx9J"><img src="./images/Discord_logo.png"></a>
+				<a href="https://twitter.com/komodoplatform"><img src="./images/Twitter_logo.png"></a>
+				<a href="https://www.youtube.com/channel/UCtp7YrrEnZbW97sgPldyvKg"><img src="./images/YouTube_logo.png"></a>
+			</div>
 
-          <div class="row extra qrzone">
-            <span class="qrinput">
-            <label id="detaillabelenterprivatekey" for="detailprivkey" class="i18n">Enter Private Key</label>
+			<div class="lastrow">
+				<a href="https://komodoplatform.com"><img src="./images/komodo-logo-horizontal-01.png" alt="Komodo Platform"></a>
+				<div>
+					Donations Appreciated:<br>
+					RQayabrAKjYKnuqnBgY7tMJHNtEvKfy79V
+				</div>
+				<a href="https://chainzilla.io"><img src="./images/chainzilla-horizontal.png" alt="ChainZilla"></a>
+			</div>
+		</div>
+	</div>
 
-              <span class="qrcodeinputwrapper">
-                <input type="text" id="detailprivkey" value="" placeholder="Enter a private key, or click the QR icon to scan" autocomplete="off" onFocus="this.select();" onKeyPress="if (event.keyCode == 13) ninja.wallets.detailwallet.viewDetails();" />
-                <img onClick="ninja.wallets.detailwallet.qrscanner.start()" />
-              </span>
+<script src="./src/progressbar.min.js"></script>
+<script src="./js/circular.js"></script>
 
-            <input type="button" id="detailview" value="View Details" onclick="ninja.wallets.detailwallet.viewDetails();" />
-          </span>
-          <span class="print">
-            <input type="button" name="print" id="detailprint" value="Print" onclick="window.print();" />
-          </span>
-          </div>
-
-          <div id="paperqrscanner">
-            <div class="background"></div>
-            <div id="mainbody" class="dialog instructionsarea">
-              <h2 id="qrcaminstructiontitle" class="i18n">Scan QR code using your camera</h2>
-              <div id="paperqrnotsupported" class="hide redColor i18n">Sorry, but your web browser does not support the HTML5 camera controls. Try using a recent version of Firefox (recommended), Chrome or Opera.</div>
-              <div id="paperqrpermissiondenied" class="hide redColor i18n">
-                <p>Permission denied. Your browser should display a message requesting access to your camera. Please click the "Allow" button to enable the camera.</p>
-              </div>
-              <div id="paperqrerror" class="redColor"></div>
-              <div id="paperqroutput"></div>
-              <button onClick="ninja.wallets.detailwallet.qrscanner.stop()">Cancel</button>
-            </div>
-          </div>
-          <div id="detailbip38commands">
-            <span><label id="detaillabelpassphrase" class="i18n">Enter BIP38 Passphrase</label> <input type="text" id="detailprivkeypassphrase" value="" onfocus="this.select();" onkeypress="if (event.keyCode == 13) ninja.wallets.detailwallet.viewDetails();" /></span>
-            <span><input type="button" id="detaildecrypt" value="Decrypt BIP38" onclick="ninja.wallets.detailwallet.viewDetails();" /></span>
-          </div>
-        </div>
-        <div id="detailkeyarea">
-          <div class="notes">
-            <span id="detaillabelnote1" class="i18n">Your Private Key is a unique secret number that only you know. It can be encoded in a number of different formats. Below we show the Public Address and Public Key that corresponds to your Private Key as well as your Private Key in the most popular encoding formats (WIF, WIFC, HEX, B64).</span>
-            <br /><br />
-          </div>
-          <div class="pubqr">
-            <div class="item">
-              <span class="label i18n" id="detaillabelbitcoinaddress">Public Address</span>
-              <div id="detailqrcodepublic" class="qrcode_public"></div>
-              <span class="output" id="detailaddress"></span>
-            </div>
-            <div class="item right">
-              <span class="label i18n" id="detaillabelbitcoinaddresscomp">Public Address Compressed</span>
-              <div id="detailqrcodepubliccomp" class="qrcode_public"></div>
-              <span class="output" id="detailaddresscomp"></span>
-            </div>
-          </div>
-          <br /><br />
-          <div class="item clear">
-            <span class="label i18n" id="detaillabelpublickey">Public Key (130 characters [0-9A-F]):</span>
-            <span class="output pubkeyhex" id="detailpubkey"></span>
-          </div>
-          <div class="item">
-            <span class="label i18n" id="detaillabelpublickeycomp">Public Key (compressed, 66 characters [0-9A-F]):</span>
-            <span class="output" id="detailpubkeycomp"></span>
-          </div>
-          <hr />
-          <div class="privqr">
-            <div class="item">
-              <span class="label"><span id="detaillabelprivwif" class="i18n">Private Key WIF<br />51 characters Base58</span></span>
-              <div id="detailqrcodeprivate" class="qrcode_private"></div>
-              <span class="output" id="detailprivwif"></span>
-            </div>
-            <div class="item right">
-              <span class="label"><span id="detaillabelprivwifcomp" class="i18n">Private Key WIF Compressed<br />52 characters Base58</span></span>
-              <div id="detailqrcodeprivatecomp" class="qrcode_private"></div>
-              <span class="output" id="detailprivwifcomp"></span>
-            </div>
-          </div>
-          <br /><br />
-          <div class="item clear">
-            <span class="label i18n" id="detaillabelprivhex">Private Key Hexadecimal Format (64 characters [0-9A-F]):</span>
-            <span class="output" id="detailprivhex"></span>
-          </div>
-          <div class="item">
-            <span class="label i18n" id="detaillabelprivb64">Private Key Base64 (44 characters):</span>
-            <span class="output" id="detailprivb64"></span>
-          </div>
-          <div class="item displayNone" id="detailmini">
-            <span class="label i18n" id="detaillabelprivmini">Private Key Mini Format (22, 26 or 30 characters):</span>
-            <span class="output" id="detailprivmini"></span>
-          </div>
-          <div class="item displayNone" id="detailb6">
-            <span class="label i18n" id="detaillabelprivb6">Private Key Base6 Format (99 characters [0-5]):</span>
-            <span class="output" id="detailprivb6"></span>
-          </div>
-          <div class="item displayNone" id="detailbip38">
-            <span class="label i18n" id="detaillabelprivbip38">Private Key BIP38 Format (58 characters Base58):</span>
-            <span class="output" id="detailprivbip38"></span>
-          </div>
-        </div>
-        <div class="faqs">
-          <div id="detailfaq1" class="faq">
-            <div id="detailq1" class="question" onclick="ninja.wallets.detailwallet.openCloseFaq(1);">
-              <span id="detaillabelq1" class="i18n">How do I make a wallet using dice? What is B6?</span>
-              <div id="detaile1" class="more"></div>
-            </div>
-            <div id="detaila1" class="answer i18n">An important part of creating a crypto-currency wallet is ensuring the random numbers used to create the wallet are truly random. Physical randomness is better than computer generated pseudo-randomness. The easiest way to generate physical randomness is with dice. To create a crypto-currency private key you only need one six sided die which you roll 99 times. Stopping each time to record the value of the die. When recording the values follow these rules: 1=1, 2=2, 3=3, 4=4, 5=5, 6=0. By doing this you are recording the big random number, your private key, in B6 or base 6 format. You can then enter the 99 character base 6 private key into the text field above and click View Details. You will then see the public address associated with your private key. You should also make note of your private key in WIF format since it is more widely used.</div>
-          </div>
-        </div>
-      </div>
-
-    <div id="footer" class="footer">
-      <div>
-        <span class="item"><a href="https://github.com/MichaelMure/WalletGenerator.net" target="_blank" id="footerlabelgithub" class="i18n">Download (GitHub Repository)</a></span>
-        <span class="item"><a href="https://twitter.com/WalletGenerator">@WalletGenerator</a></span>
-      </div>
-      <div class="copyright">
-        <span id="footerlabelcopyright1">Copyright WalletGenerator.net.</span>
-        <span id="footerlabelcopyright2" class="i18n">JavaScript copyrights are included in the source.</span>
-        <span id="footerlabelnowarranty" class="i18n">No warranty.</span>
-      </div>
-    </div>
-  </div>
-
-  <script type="text/javascript">
+<script type="text/javascript">
 (function (window) {
 	var muchIndex    = 0;
 	var wowLength    = 0;
@@ -10155,12 +9974,12 @@ janin.currency = {
     useCurrency: function(index) {
         janin.selectedCurrency = janin.currencies[index];
 
-        var coinImgUrl = "logos/" + janin.currency.name().toLowerCase() + ".png";
-        document.getElementById("coinLogoImg").src = coinImgUrl;
+		// var coinImgUrl = "logos/" + janin.currency.name().toLowerCase() + ".png";
+        // document.getElementById("coinLogoImg").src = coinImgUrl;
 
         // Update title depending on currency
-        document.title = janin.currency.name() + " " + ninja.translator.get("title");
-        document.getElementById("siteTitle").alt = janin.currency.name() + " " + ninja.translator.get("title");
+        // document.title = janin.currency.name() + " " + ninja.translator.get("title");
+        // document.getElementById("siteTitle").alt = janin.currency.name() + " " + ninja.translator.get("title");
 
         // Update i18n link
         document.getElementById("cultureen").href = "?culture=en&currency=" + janin.currency.name().toLowerCase();
@@ -10556,7 +10375,7 @@ ninja.publicKey = {
   <script type="text/javascript">
 	ninja.seeder = {
 		init: (function () {
-			document.getElementById("generatekeyinput").value = "";
+			// document.getElementById("generatekeyinput").value = "";
 		})(),
 
 		// number of mouse movements to wait for
@@ -10895,7 +10714,7 @@ ninja.translator = {
 
 	translations: {
     ﻿"en": {
-    "defaultTitle" : "WalletGenerator.net - Universal Paper wallet generator for Bitcoin and other cryptocurrencies",
+    "defaultTitle" : "Komodo Universal Paper Wallet Generator",
     "title" : "Paper Wallet Generator",
     "bulkgeneratingaddresses": "Generating addresses... ",
     "brainalertpassphrasetooshort": "The passphrase you entered is too short.\n\n",
@@ -11172,10 +10991,16 @@ ninja.wallets.singlewallet = {
 		if (document.getElementById("btcaddress").innerHTML == "") {
 			ninja.wallets.singlewallet.generateNewAddressAndKey();
 		}
-		document.getElementById("walletCommands").style.display = "block";
+		// document.getElementById("walletCommands").style.display = "block";
 		document.getElementById("keyarea").style.display = "block";
+		document.getElementById("paperwalletarea").style.display = "block";
 		document.getElementById("singlearea").style.display = "block";
-		document.getElementById("initBanner").style.display = "none";
+		// document.getElementById("faqZone").style.display = "block";
+		// document.getElementById("initBanner").style.display = "none";
+		document.getElementById("singlesafety").style.display = "none";
+
+		document.getElementById("newaddresshero").style.display = "none";
+		document.getElementById("newaddresshero1").style.display = "inline-block";
 	},
 
 	close: function () {
@@ -11191,9 +11016,13 @@ ninja.wallets.singlewallet = {
 			var privateKeyWif = key.getBitcoinWalletImportFormat();
 			document.getElementById("btcaddress").innerHTML = bitcoinAddress;
 			document.getElementById("btcprivwif").innerHTML = privateKeyWif;
+			document.getElementById("paperwalletpublic").innerHTML = bitcoinAddress;
+			document.getElementById("paperwalletprivate").innerHTML = privateKeyWif;
 			var keyValuePair = {
 				"qrcode_public": bitcoinAddress,
-				"qrcode_private": privateKeyWif
+				"paperwalletqrpublic": bitcoinAddress,
+				"qrcode_private": privateKeyWif,
+				"paperwalletqrprivate": privateKeyWif
 			};
 			ninja.qrCode.showQrCode(keyValuePair, 4);
 		}
@@ -11207,7 +11036,198 @@ ninja.wallets.singlewallet = {
 		}
 	}
 };
-  </script>
+	</script>
+	<script src="agamalib.js"></script>
+	<!-- bip39 priv keys -->
+	<script type="text/javascript">
+		ninja.wallets.getbip39keys = {
+			open: function () {
+				document.getElementById("getbip39keysarea").style.display = "block";
+				//document.getElementById("btcnet-kmd").selected = true;
+			},
+			get: function() {
+				var seed = document.getElementById("getbip39keysarea-seed").value;
+				var searchPattern = document.getElementById("getbip39keysarea-search").value;
+
+				if (searchPattern) {
+					var res = agama.keys.bip39Search(
+						seed,
+						agama.btcnetworks.kmd,
+						searchPattern,
+						document.getElementById("getprivkeysarea-select-addresses-count").value,
+						document.getElementById("getprivkeysarea-select-accounts-count").value,
+						true,
+						document.getElementById("getprivkeysarea-select-addresses-count-offset").value,
+						document.getElementById("getprivkeysarea-select-accounts-count-offset").value
+					);
+
+					if (res &&
+							res.priv) {
+						var htmlOut = '<div class="getprivkeysarea-inner-res-msg-item">' +
+							'<div class="getprivkeysarea-inner-res-msg-item-col">' +
+								'<strong>Pub </strong>' + res.pub +
+							'</div>' +
+							'<div class="getprivkeysarea-inner-res-msg-item-col last">' +
+								'<strong>Priv </strong>' + res.priv +
+							'</div>' +
+						'</div>';
+						document.getElementById("getbip39keysarea-inner-res-msg").innerHTML = htmlOut;
+					} else {
+						document.getElementById("getbip39keysarea-inner-res-msg").innerHTML = 'Unable to find address ' + searchPattern + ', please check pub key and seed are correct or try incrementing selector options.';
+					}
+					document.getElementById("getbip39keysarea-inner-res").style.display = "block";
+				}/* else {
+					var htmlOut = [];
+
+					for () {
+						htmlOut.push(
+						);
+					}
+
+					document.getElementById("getbip39keysarea-inner-res-msg").innerHTML = htmlOut.join('');
+					document.getElementById("getbip39keysarea-inner-res").style.display = "block";
+				}*/
+			},
+			close: function () {
+				document.getElementById("getbip39keysarea").style.display = "none";
+				document.getElementById("getbip39keysarea-inner-res-msg").innerHTML = '';
+				document.getElementById("getbip39keysarea-inner-res").style.display = "none";
+			},
+		};
+	</script>
+	<!-- get priv keys -->
+	<script type="text/javascript">
+		ninja.wallets.getprivkeys = {
+			open: function () {
+				document.getElementById("getprivkeysarea").style.display = "block";
+
+				var htmlOut = [];
+
+				for (var key in agama.btcnetworks) {
+					if (key !== 'grs' &&
+							key !== 'smart') {
+						htmlOut.push("<option id=\"btcnet-" + key + "\" value=\"" + key + "\">" + key + "</option>");
+					}
+				}
+				htmlOut.push("<option id=\"btcnet-all\" value=\"all\">all</option>");
+
+				document.getElementById("getprivkeysarea-select").innerHTML = htmlOut.join('');
+				document.getElementById("btcnet-kmd").selected = true;
+			},
+			get: function() {
+				var option = document.getElementById("getprivkeysarea-select").value;
+				var seed = document.getElementById("getprivkeysarea-seed").value;
+
+				if (seed) {
+					if (option !== 'all') {
+						var _keys = agama.keys.seedToWif(seed, agama.btcnetworks[option], true);
+
+						document.getElementById("getprivkeysarea-inner-res").style.display = "block";
+						document.getElementById("getprivkeysarea-inner-res-msg").innerHTML = '<div class="getprivkeysarea-inner-res-msg-item">' +
+							'<div class="getprivkeysarea-inner-res-msg-item-col">' +
+								'<strong>Pub </strong>' + _keys.pub +
+							'</div>' +
+							'<div class="getprivkeysarea-inner-res-msg-item-col">' +
+								'<strong>Priv </strong>' + _keys.priv +
+							'</div>' +
+						'</div>';
+					} else {
+						var htmlOut = [];
+
+						for (var key in agama.btcnetworks) {
+							var _keys = agama.keys.seedToWif(seed, agama.btcnetworks[key], true);
+
+							htmlOut.push(
+								'<div class="getprivkeysarea-inner-res-msg-item">' +
+									'<div class="getprivkeysarea-inner-res-msg-item-col">' +
+										'<strong>' + key.toUpperCase() + '</strong>' +
+									'</div>' +
+									'<div class="getprivkeysarea-inner-res-msg-item-col">' +
+										'<strong>Pub </strong>' + _keys.pub +
+									'</div>' +
+									'<div class="getprivkeysarea-inner-res-msg-item-col last">' +
+										'<strong>Priv </strong>' + _keys.priv +
+									'</div>' +
+								'</div>'
+							);
+						}
+
+						document.getElementById("getprivkeysarea-inner-res-msg").innerHTML = htmlOut.join('');
+						document.getElementById("getprivkeysarea-inner-res").style.display = "block";
+					}
+				}
+			},
+			close: function () {
+				document.getElementById("getprivkeysarea-inner-res-msg").innerHTML = '';
+				document.getElementById("getprivkeysarea").style.display = "none";
+				document.getElementById("getprivkeysarea-inner-res").style.display = "none";
+			},
+		};
+	</script>
+	<!-- gen seed -->
+	<script type="text/javascript">
+		ninja.wallets.generateseed = {
+			bits: 256,
+			isFirstRun: true,
+			open: function () {
+				document.getElementById("generateseedarea").style.display = "block";
+				this.generate(256);
+			},
+			generate: function(bits) {
+				// if (this.bits !== bits ||
+				// 		this.isFirstRun) {
+				// 	this.bits = bits;
+				// 	this.isFirstRun = false;
+
+					document.getElementById("generateseedarea-seed").innerHTML = agama.crypto.passphraseGenerator.generatePassPhrase(bits);
+				// }
+			},
+			close: function () {
+				document.getElementById("generateseedarea-seed").innerHTML = "";
+				// document.getElementById("seedtype1").checked = "checked";
+				document.getElementById("generateseedarea").style.display = "none";
+			},
+		};
+	</script>
+	<!-- decrypt seed -->
+	<script type="text/javascript">
+		ninja.wallets.decryptseed = {
+			open: function () {
+				document.getElementById("decryptseedarea").style.display = "block";
+			},
+			decode: function() {
+				try {
+					agama.crypto.cryptstr.decrypt(
+							document.getElementById("encryptedseedkey").value,
+							document.getElementById("encryptedseed").value
+					)
+					.then(function(res) {
+						document.getElementById("decryptseedarea-inner-res").style.display = "block";
+
+						if (res &&
+								res.string) {
+							document.getElementById("decryptseedarea-inner-res-msg").style.color = "inherit";
+							document.getElementById("decryptseedarea-inner-res-msg").innerHTML = "<strong>Decoded seed: </strong>" + res.string;
+						} else {
+							document.getElementById("decryptseedarea-inner-res-msg").style.color = "red";
+							document.getElementById("decryptseedarea-inner-res-msg").innerHTML = "<strong>Error: </strong> cannot decode, check decryption key and/or pin content are correct";
+						}
+					});
+				} catch (e) {
+					document.getElementById("decryptseedarea-inner-res").style.display = "block";
+					document.getElementById("decryptseedarea-inner-res-msg").style.color = "red";
+					document.getElementById("decryptseedarea-inner-res-msg").innerHTML = "<strong>Error: </strong> cannot decode, check decryption key and/or pin content are correct";
+				}
+			},
+			close: function () {
+				document.getElementById("encryptedseed").value = "";
+				document.getElementById("encryptedseedkey").value = "";
+				document.getElementById("decryptseedarea").style.display = "none";
+				document.getElementById("decryptseedarea-inner-res-msg").style.color = "inherit";
+				document.getElementById("decryptseedarea-inner-res-msg").innerHTML = "";
+			},
+		};
+	</script>
   <script type="text/javascript">
 ninja.wallets.paperwallet = {
 	open: function () {
@@ -11336,14 +11356,14 @@ ninja.wallets.paperwallet = {
 		var walletBackgroundUrl = "wallets/" + janin.selectedCurrency.name.toLowerCase() + ".png";
 
 		var walletHtml =
-							"<div class='coinIcoin'> <img id='coinImg' src='" + coinImgUrl + "' alt='currency_logo' /></div><div class='artwallet' id='artwallet" + i + "'>" +
-								"<img id='papersvg" + i + "' class='papersvg' src='" + walletBackgroundUrl + "' />" +
-								"<div id='qrcode_public" + i + "' class='qrcode_public'></div>" +
-								"<div id='qrcode_private" + i + "' class='qrcode_private'></div>" +
-								"<div class='btcaddress' id='btcaddress" + i + "'></div>" +
-								"<div class='" + keyelement + "' id='" + keyelement + i + "'></div>" +
-								"<div class='paperWalletText'><img class='backLogo' src='" + coinImgUrl + "' alt='currency_logo' />" + ninja.translator.get("paperwalletback") + "</div>" +
-							"</div>";
+			"<div class='coinIcoin'> <img id='coinImg' src='" + coinImgUrl + "' alt='currency_logo' /></div><div class='artwallet' id='artwallet" + i + "'>" +
+				"<img id='papersvg" + i + "' class='papersvg' src='" + walletBackgroundUrl + "' />" +
+				"<div id='qrcode_public" + i + "' class='qrcode_public'></div>" +
+				"<div id='qrcode_private" + i + "' class='qrcode_private'></div>" +
+				"<div class='btcaddress' id='btcaddress" + i + "'></div>" +
+				"<div class='" + keyelement + "' id='" + keyelement + i + "'></div>" +
+				"<div class='paperWalletText'><img class='backLogo' src='" + coinImgUrl + "' alt='currency_logo' />" + ninja.translator.get("paperwalletback") + "</div>" +
+			"</div>";
 		return walletHtml;
 	},
 
@@ -11600,6 +11620,7 @@ ninja.wallets.detailwallet = {
 
 	viewDetails: function () {
 		var bip38 = false;
+		document.querySelector('#detailkeydetails').style.display = 'block';
 		var key = document.getElementById("detailprivkey").value.toString().replace(/^\s+|\s+$/g, ""); // trim white space
 		document.getElementById("detailprivkey").value = key;
 		var bip38CommandDisplay = document.getElementById("detailbip38commands").style.display;
@@ -11675,8 +11696,8 @@ ninja.wallets.detailwallet = {
 			var bitcoinAddress = btcKey.getBitcoinAddress();
 			var wif = btcKey.getBitcoinWalletImportFormat();
 			document.getElementById("detailpubkey").innerHTML = btcKey.getPubKeyHex();
-			document.getElementById("detailaddress").innerHTML = bitcoinAddress;
-			document.getElementById("detailprivwif").innerHTML = wif;
+			// document.getElementById("detailaddress").innerHTML = bitcoinAddress;
+			// document.getElementById("detailprivwif").innerHTML = wif;
 			btcKey.setCompressed(true);
 			var bitcoinAddressComp = btcKey.getBitcoinAddress();
 			var wifComp = btcKey.getBitcoinWalletImportFormat();
@@ -11685,9 +11706,9 @@ ninja.wallets.detailwallet = {
 			document.getElementById("detailprivwifcomp").innerHTML = wifComp;
 
 			ninja.qrCode.showQrCode({
-				"detailqrcodepublic": bitcoinAddress,
+				// "detailqrcodepublic": bitcoinAddress,
 				"detailqrcodepubliccomp": bitcoinAddressComp,
-				"detailqrcodeprivate": wif,
+				// "detailqrcodeprivate": wif,
 				"detailqrcodeprivatecomp": wifComp
 			}, 4);
 		}
@@ -11696,18 +11717,18 @@ ninja.wallets.detailwallet = {
 	clear: function () {
 		document.getElementById("detailpubkey").innerHTML = "";
 		document.getElementById("detailpubkeycomp").innerHTML = "";
-		document.getElementById("detailaddress").innerHTML = "";
+		// document.getElementById("detailaddress").innerHTML = "";
 		document.getElementById("detailaddresscomp").innerHTML = "";
-		document.getElementById("detailprivwif").innerHTML = "";
+		// document.getElementById("detailprivwif").innerHTML = "";
 		document.getElementById("detailprivwifcomp").innerHTML = "";
 		document.getElementById("detailprivhex").innerHTML = "";
 		document.getElementById("detailprivb64").innerHTML = "";
 		document.getElementById("detailprivb6").innerHTML = "";
 		document.getElementById("detailprivmini").innerHTML = "";
 		document.getElementById("detailprivbip38").innerHTML = "";
-		document.getElementById("detailqrcodepublic").innerHTML = "";
+		// document.getElementById("detailqrcodepublic").innerHTML = "";
 		document.getElementById("detailqrcodepubliccomp").innerHTML = "";
-		document.getElementById("detailqrcodeprivate").innerHTML = "";
+		// document.getElementById("detailqrcodeprivate").innerHTML = "";
 		document.getElementById("detailqrcodeprivatecomp").innerHTML = "";
 		document.getElementById("detailb6").style.display = "none";
 		document.getElementById("detailmini").style.display = "none";
@@ -11756,7 +11777,7 @@ for(i = 0; i < janin.currencies.length; i++) {
 // Reset title if no currency is choosen
 if(ninja.getQueryString()["currency"] == null) {
     document.title = ninja.translator.get("defaultTitle");
-    document.getElementById("siteTitle").alt = ninja.translator.get("defaultTitle");
+    // document.getElementById("siteTitle").alt = ninja.translator.get("defaultTitle");
 }
 
 // Extract i18n
@@ -11804,8 +11825,8 @@ function cleani18n(string) {
                 .replace(/"/g, '\\"');
 }
 
-ninja.envSecurityCheck();
-ninja.browserSecurityCheck();
+// ninja.envSecurityCheck();
+// ninja.browserSecurityCheck();
 
   </script>
 </body>
